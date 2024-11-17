@@ -271,26 +271,83 @@
 
 %%% Question 2: Empirical analysis
 \section{Empirical analysis}
-\begin{enumerate}
     %% Question 2.1: Explain why estimating the residual error term is very difficult in this setting.
-    \item 
+The residual error represents the minimal attainable error, which is the irreducible noise in the data. The key challenge is that we don't know the true function $f^*(x)$ that maps wine characteristics to quality scores. Without this true function $f^*(x)$, we cannot measure how much of the prediction error comes from noise versus other sources of error. \\
+    
+    This is because the residual error is defined as the difference between the actual observed values y and the true function values \[ f^*(x): \mathbb{E}[(y - f^*(x))^2]\]\\
+    Even if we build a very good model, we cannot know how close it is to this true underlying function f*(x), and therefore cannot isolate how much of the error is truly irreducible (residual error) versus due to model imperfections. \\
+    
+    In our case, this is particularly challenging because the relationship between wine characteristics and quality involves human judgments that do not follow any consistent mathematical function, making the true $f^*(x)$ even more difficult to determine. \\
+    
+    Additionally, the observed error is a combination of bias, variance, and residual error. \[ Total Error = Bias + Variance + ResidualError\] Since bias and variance arise from model imperfections, separating these components from the irreducible residual error becomes nearly impossible without further assumptions or prior knowledge of the noise distribution.
+    
 
     %% Question 2.2: Describe a protocol to nevertheless estimate variance, the expected error, as 
     % well as the sum of the bias and the residual error from a pool P.
-    \item 
+Our protocol consists of the following steps : \\ 
+
+\textbf{Step 1}
+\begin{enumerate}
+    \item From the dataset \( P \) of size \( N_S \), randomly divide the data into multiple subsets of fixed size \( N \) (learning samples, \( LS \)).
+    \item Select a fixed, independent test set \( TS \) for evaluating the model performance. The test set must remain unchanged and independent of the learning samples.
+\end{enumerate}
+
+\textbf{Step 2}
+\begin{enumerate}
+    \item For each learning sample \( LS_j \):
+    \begin{enumerate}
+        \item Train a model \( \hat{f}_{LS_j} \) using the learning sample \( LS_j \).
+        \item Generate predictions on the test set \( TS \) for each trained model.
+        \item Record the predictions for each point \( x_i \in TS \).
+    \end{enumerate}
+\end{enumerate}
+\newpage
+\textbf{Step 3} 
+For every point \( x_i \in TS \), decompose the total error into variance, bias, and residual error:
+
+\begin{enumerate}
+    \item \textbf{Expected Error (Total Error):}
+    \[
+    \text{Total Error} = \frac{1}{M} \sum_{j=1}^M (y_i - \hat{f}_{LS_j}(x_i))^2
+    \]
+    where \( M \) is the number of models trained using different learning samples \( LS_j \), and \( y_i \) is the true value for \( x_i \).
+
+    \item \textbf{Variance:}
+    \[
+    \text{Variance} = \frac{1}{M} \sum_{j=1}^M (\hat{f}_{LS_j}(x_i) - \bar{\hat{f}}(x_i))^2
+    \]
+    where \( \bar{\hat{f}}(x_i) = \frac{1}{M} \sum_{j=1}^M \hat{f}_{LS_j}(x_i) \) is the mean of the predictions across different learning samples.
+
+    \item \textbf{Sum of Bias and Residual Error:}
+    \[
+    \text{Bias + Residual Error} = \text{Total Error} - \text{Variance}
+    \]
+    Since the residual error is constant across different models, any variation in the total error after subtracting variance can be attributed to the bias and residual error.
+\end{enumerate}
+
+\textbf{Step 4}
+\begin{enumerate}
+    \item For each point \( x_i \in TS \), calculate the average values of the variance, bias + residual error, and total error across all the models.
+    \item Use these average values as the overall estimates for variance, bias + residual error, and total error.
+\end{enumerate}
+
+
+\vspace{0.4cm}
+
+This protocol can be repeated with different hyperparameter settings of the learning algorithm to assess their impact on bias and variance. Since the residual error remains constant, any changes in the decomposed values can be attributed to changes in either bias or variance, allowing us to understand how different hyperparameter choices affect the bias-variance tradeoff.
+
+
     
     %% Question 2.3: Implement and use this protocol on the given dataset to estimate the expected error, 
     % variance, and the sum of bias and residual error, for Lasso regression, kNN, and regression trees.
-    \item 
+
     
     %% Question 2.4: For the same three methods, show the impact of the learning sample size on bias and 
     % variance.
-    \item 
+
     
     %% Question 2.5: Two so-called ensemble methods to address variance and bias are bagging 
     % ("bootstrap aggregating") and boosting. 
-    \item 
+
     
-\end{enumerate}
-        
 \end{document}
