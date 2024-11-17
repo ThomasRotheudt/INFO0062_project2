@@ -1,14 +1,14 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import Lasso
-from sklearn.linear_model import Ridge
-
-# Load the dataset
+from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_openml
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import shuffle
 
+# Load the dataset
 def load_wine_quality():
     """Loads and returns the (normalized) Wine Quality dataset from OpenML."""
     dataset = fetch_openml(data_id=287, parser='auto')
@@ -27,8 +27,6 @@ def load_wine_quality():
     return x, y
 
 # Step 1: Prepare the data
-from sklearn.model_selection import train_test_split
-
 def prepare_learning_samples(X, y, num_samples=8, sample_size=500, test_size=0.2):
     """
     Split the dataset into train and test sets, and generate multiple learning samples.
@@ -84,6 +82,31 @@ def compute_metrics(predictions, true_values):
     
     return total_error, variance, bias_residual_error
 
+# Plot the results
+def plot_results(results):
+    """
+    Plot the total error, variance, and bias + residual error for different models.
+    """
+    models = list(results.keys())
+    total_errors = [results[model]["total_error"] for model in models]
+    variances = [results[model]["variance"] for model in models]
+    biases = [results[model]["bias_residual_error"] for model in models]
+
+    # Create a bar chart
+    x = np.arange(len(models))
+    width = 0.25
+
+    plt.bar(x - width, total_errors, width, label="Total Error")
+    plt.bar(x, variances, width, label="Variance")
+    plt.bar(x + width, biases, width, label="Bias + Residual Error")
+
+    plt.xlabel("Models")
+    plt.ylabel("Error")
+    plt.title("Comparison of Errors for Different Models")
+    plt.xticks(x, models)
+    plt.legend()
+    plt.show()
+
 # Main program
 if __name__ == "__main__":
     # Load the Wine Quality dataset
@@ -92,17 +115,38 @@ if __name__ == "__main__":
     # Prepare the data
     learning_samples, X_test, y_test = prepare_learning_samples(X, y, num_samples=10, sample_size=250, test_size=0.2)
     
-    # Choose the model to evaluate
-    model_fn = lambda: Lasso(alpha=0.5**4)
- # Example: k-NN model with k=5
+    # Evaluate different models
+    results = {}
     
-    # Train models and predict
-    predictions = train_and_predict(learning_samples, X_test, model_fn)
+    # k-NN
+    knn_model_fn = lambda: KNeighborsRegressor(n_neighbors=5)
+    knn_predictions = train_and_predict(learning_samples, X_test, knn_model_fn)
+    total_error, variance, bias_residual_error = compute_metrics(knn_predictions, y_test)
+    results["k-NN"] = {
+        "total_error": total_error,
+        "variance": variance,
+        "bias_residual_error": bias_residual_error
+    }
     
-    # Compute metrics
-    total_error, variance, bias_residual_error = compute_metrics(predictions, y_test)
+    # Lasso
+    lasso_model_fn = lambda: Lasso(alpha=0.5**4)
+    lasso_predictions = train_and_predict(learning_samples, X_test, lasso_model_fn)
+    total_error, variance, bias_residual_error = compute_metrics(lasso_predictions, y_test)
+    results["Lasso"] = {
+        "total_error": total_error,
+        "variance": variance,
+        "bias_residual_error": bias_residual_error
+    }
     
-    # Display results
-    print(f"Total Error: {total_error:.4f}")
-    print(f"Variance: {variance:.4f}")
-    print(f"Bias + Residual Error: {bias_residual_error:.4f}")
+    # Decision Tree
+    tree_model_fn = lambda: DecisionTreeRegressor(max_depth=5)
+    tree_predictions = train_and_predict(learning_samples, X_test, tree_model_fn)
+    total_error, variance, bias_residual_error = compute_metrics(tree_predictions, y_test)
+    results["Decision Tree"] = {
+        "total_error": total_error,
+        "variance": variance,
+        "bias_residual_error": bias_residual_error
+    }
+    
+    # Plot the results
+    plot_results(results)
