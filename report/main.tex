@@ -166,7 +166,7 @@
 
     The bias can be written as:
     $$
-    \text{bias} = \left(\frac{1}{k}\sum^k_{l=1}({x}_{(l)})^2\right)^2
+    \text{bias} = \frac{-1}{k}\sum^k_{l=1}({x}_{(l)})^2
     $$
     Since the training inputs are symmetrically distributed around $x=0$ on a uniform grid in [-1,+1], the k-neighbors of $x=0$ include the point $x=0$, $k'$ positive points, and $k'$ negative points. We have that
     $$
@@ -178,11 +178,11 @@
     $$
     The result must be expressed as a function of k and N, we can replace $k'$ and $N'$ with the relation $k' = \frac{k-1}{2}$ and $N' = \frac{N-1}{2}$:
     $$
-    \frac{2}{\frac{(N-1)^2}{4}}\frac{(\frac{k-1}{2})(\frac{k-1}{2}+1)(k-1+1)}{6} = \frac{4k(k-1)(\frac{k-1}{2}+1)}{3(N-1)^2}
+    \frac{2}{\frac{(N-1)^2}{4}}\frac{(\frac{k-1}{2})(\frac{k-1}{2}+1)(k-1+1)}{6} = \frac{k(k^2 - 1)}{3(N-1)^2}
     $$
     The bias can be written as a function of k and N:
     $$
-    \text{bias} = \left(\frac{1}{k}\frac{4k(k-1)(\frac{k-1}{2}+1)}{3(N-1)^2}\right)^2 =  \left(\frac{4(k-1)(\frac{k-1}{2}+1)}{3(N-1)^2}\right)^2 
+    \text{bias} = \frac{-(k^2 - 1)}{3(N-1)^2}
     $$
 
 
@@ -197,14 +197,14 @@
     \item 
     \begin{itemize}
         \item 
-        $k$ appears in the formula of the variance and it is obvious that a greater k leads to a smaller variance. But increasing $k$ may lead to an increase of the biais because we would consider more distant points which reduce the flexibility of the model.
+        $k$ appears in the formula of the variance and it is obvious that a greater k leads to a smaller variance. But increasing $k$ may lead to an increase of the bias\footnote{We use increase and decrease to define the change on the bias absolute value.} because we would consider more distant points which reduce the flexibility of the model.
         \item
         Increasing the size $N$ of the learning sample generally leads to a denser distribution, therefore with the same $k$ and $\sigma$, the k-nearest neighbors around $x$ will be closer to $x$ and we can expect that they better represent the local behavior of $f(x)$.
         We can say that larger N leads to smaller bias. If we consider the problem explain in 2, we can see that the size $N$ is in the bias formula and increasing $N$ reduces the bias.
 
         $N$ has no direct impact on the variance but we can note that a larger $N$ allows a larger $k$ which leads to a lower variance. 
         \item 
-        A greater $\sigma$ means more noise and as we may expect it increases the variance but does not impact the biais.
+        A greater $\sigma$ means more noise and as we may expect it increases the variance but does not impact the bias.
     \end{itemize}
 
 
@@ -212,9 +212,57 @@
     %% Question 1.4: For all combinations of N in {25, 50} and σ ∈ {0.0, 0.1, 0.2}, determine 
     % the value k∗ of k that minimizes the expected generalization error at x = 0.
     \item
+    % New attempt at derivative approach:
+    % As suggested we'll compute the minimum of the bias plus variance found in 2. Let's define:
+    % $$
+    % f(k) = \sigma^2 + \left[\frac{-(k^2 - 1)}{3(N-1)^2}\right]^2 + \frac{\sigma^2}{k}
+    % $$
+    % To find the minimum we should first compute the derivative $f'(k)$:
+    % $$
+    % f'(k) = \frac{4k(k^2-1)}{9(N-1)^4} - \frac{\sigma^2}{k^2}
+    % $$
+    % The term with the greastest ordre of $k$ (third order) in $f(k)$ is positive and $f(k)$ is continuous, 
+    % therefore the minimum occurs when the derivative is null.
+    % $$
+    % f'(k) = 0
+    % $$
+    % We find:
+    % $$
+    % k = pas trouvé
+    % $$
+    % This doesn't take into account that k must be an integer nor the fact that the formula were found assuming k being odd.
+
+    % The results using the derivative are the following:
+    % \begin{table}[H]
+    %   \centering
+    %   \begin{tabular}{l|l|l|l|}
+    %   \cline{2-4}
+    %                            & $\sigma = 0$ & $\sigma = 0.1$ & $\sigma = 0.2$ \\ \hline
+    %   \multicolumn{1}{|l|}{$N = 25$} & 0  &  1,423  &  2,258 \\ \hline
+    %   \multicolumn{1}{|l|}{$N = 50$} & 0  &  2,290   &  3,635 \\ \hline
+    %   \end{tabular}
+    %   \caption{Table of $k^*$ based on derivative}
+    % \end{table}
+    % These values cannot be used like that for as an hyperparameter. We have to consider at least one neighbor and the float must be rounded to integer.
+
+    % If we compute the best $k*$ using experiments with only odd values of $k$ we find the following results:
+    % \begin{table}[H]
+    %   \centering
+    %   \begin{tabular}{l|l|l|l|}
+    %   \cline{2-4}
+    %                            & $\sigma = 0$ & $\sigma = 0.1$ & $\sigma = 0.2$ \\ \hline
+    %   \multicolumn{1}{|l|}{$N = 25$} & 1  &  3  &  3 \\ \hline
+    %   \multicolumn{1}{|l|}{$N = 50$} & 1  &  3   &  5 \\ \hline
+    %   \end{tabular}
+    %   \caption{Table of $k^*$ based on experiments}
+    % \end{table}
+
+
+
+
     As suggested we'll compute the minimum by running actual experiments. We have to minimize this function:
     $$
-    f(k) = \frac{4}{{3(N-1)^2}} \left(\frac{(k-1)^2}{2} + (k-1)\right)^2 + \frac{\sigma^2}{k}
+    f(k) = \sigma^2 + \left[\frac{-(k^2 - 1)}{3(N-1)^2}\right]^2 + \frac{\sigma^2}{k}
     $$
     By testing every possible value of $k$ such that $k = 2k' + 1$ with $0 \le k' \le \frac{N-1}{2}$ for each combination of $N$ and $\sigma$ we have the following results:
     \begin{table}[H]
@@ -222,8 +270,8 @@
       \begin{tabular}{l|l|l|l|}
       \cline{2-4}
                                & $\sigma = 0$ & $\sigma = 0.1$ & $\sigma = 0.2$ \\ \hline
-      \multicolumn{1}{|l|}{$N = 25$} & 1  &  1  &  1 \\ \hline
-      \multicolumn{1}{|l|}{$N = 50$} & 1  &  1   &  3 \\ \hline
+      \multicolumn{1}{|l|}{$N = 25$} & 1  &  5  &  7 \\ \hline
+      \multicolumn{1}{|l|}{$N = 50$} & 1  &  11   &  13 \\ \hline
       \end{tabular}
       \caption{Table of $k^*$ considering only odd values for k}
     \end{table}
@@ -235,11 +283,14 @@
       \begin{tabular}{l|l|l|l|}
       \cline{2-4}
                                & $\sigma = 0$ & $\sigma = 0.1$ & $\sigma = 0.2$ \\ \hline
-      \multicolumn{1}{|l|}{$N = 25$} & 1  &  1  &  2 \\ \hline
-      \multicolumn{1}{|l|}{$N = 50$} & 1  &  2   &  2 \\ \hline
+      \multicolumn{1}{|l|}{$N = 25$} & 1  &  6  &  8 \\ \hline
+      \multicolumn{1}{|l|}{$N = 50$} & 1  &  11   &  14 \\ \hline
       \end{tabular}
       \caption{Table of $k^*$ considering every value for $k$}
     \end{table}
+
+
+    
     % Below was a attempt for the derivative approach.
     % As suggested we'll compute the minimum of the bias plus variance found in 2. Let's define:
     % $$

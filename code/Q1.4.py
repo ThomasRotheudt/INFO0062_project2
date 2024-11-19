@@ -1,13 +1,14 @@
 Q1_4 = True
 
 def function_f(k, N, sigma):
-    value = 4/(3*((N-1)**2))*(((k-1)**2)/2 + (k-1))**2 + (sigma**2)/k
+    value = sigma**2 + (-(k**2 - 1)/(3*(N-1)**2))**2 + (sigma**2)/k
     return value
 
 # Question 1.4
 if Q1_4:
     for N in [25,50]:
         for sigma in [0.0, 0.1, 0.2]:
+            print(f"N={N}, sigma={sigma}")
             min_value = float('inf')
             best_k = -1
             for k_prime in range(int((N-1)/2)):
@@ -16,7 +17,7 @@ if Q1_4:
                 if value < min_value:
                     min_value = value
                     best_k = k
-            print(f"N={N}, sigma={sigma} => k*={best_k}")
+            print(f"Experiment: k*={best_k}")
 
 # Question 1.5
 else:
