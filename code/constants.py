@@ -10,6 +10,6 @@ LASSO_PARAMS = np.logspace(-6, 0, 20)
 TREE_PARAMS = range(1, 21)
 
 # Enable or disable respective part
-KNN = False
+KNN = True
 LASSO = True
-TREE = False
+TREE = True
