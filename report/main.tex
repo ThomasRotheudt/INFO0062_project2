@@ -49,7 +49,7 @@
 \begin{titlepage}
    \begin{center}
 
-    % Upper part of the page. The '~' is needed because \\
+    % Upper part of the page. The '~' is needed because 
     % only works if a paragraph has started.
     ~\\[4cm]
     \includegraphics[scale=0.9]{images/facsa.png}
@@ -65,15 +65,15 @@
     % Author and supervisor
     \begin{minipage}{0.3\textwidth}
       \begin{flushleft} \large
-        Arthur \textsc{GRAILLET}\\
-        Robin \textsc{FONBONNE}\\
+        Arthur \textsc{GRAILLET}
+        Robin \textsc{FONBONNE}
         Thomas \textsc{ROTHEUDT}
       \end{flushleft}
     \end{minipage}
     \begin{minipage}{0.3\textwidth}
       \begin{flushright}\large
-        s182019\\
-        s182200\\
+        s182019
+        s182200
         s191895
       \end{flushright}
     \end{minipage}
@@ -298,12 +298,12 @@
 
 \subsection{}
 
-The residual error represents the minimal attainable error, which is the irreducible noise in the data. The key challenge is that we don't know the true function $f^*(x)$ that maps wine characteristics to quality scores. Without this true function $f^*(x)$, we cannot measure how much of the prediction error comes from noise versus other sources of error. \\
+The residual error represents the minimal attainable error, which is the irreducible noise in the data. The key challenge is that we don't know the true function $f^*(x)$ that maps wine characteristics to quality scores. Without this true function $f^*(x)$, we cannot measure how much of the prediction error comes from noise versus other sources of error.
     
-    This is because the residual error is defined as the difference between the actual observed values y and the true function values \[ f^*(x): \mathbb{E}[(y - f^*(x))^2]\]\\
-    Even if we build a very good model, we cannot know how close it is to this true underlying function f*(x), and therefore cannot isolate how much of the error is truly irreducible (residual error) versus due to model imperfections. \\
+    This is because the residual error is defined as the difference between the actual observed values y and the true function values \[ f^*(x): \mathbb{E}[(y - f^*(x))^2]\]
+    Even if we build a very good model, we cannot know how close it is to this true underlying function f*(x), and therefore cannot isolate how much of the error is truly irreducible (residual error) versus due to model imperfections. 
     
-    In our case, this is particularly challenging because the relationship between wine characteristics and quality involves human judgments that do not follow any consistent mathematical function, making the true $f^*(x)$ even more difficult to determine. \\
+    In our case, this is particularly challenging because the relationship between wine characteristics and quality involves human judgments that do not follow any consistent mathematical function, making the true $f^*(x)$ even more difficult to determine. 
     
     Additionally, the observed error is a combination of bias, variance, and residual error. \[ Total Error = Bias + Variance + ResidualError\] Since bias and variance arise from model imperfections, separating these components from the irreducible residual error becomes nearly impossible without further assumptions or prior knowledge of the noise distribution.
     
@@ -327,8 +327,6 @@ The objective of our protocol is to decompose the total error of a model into th
         \item \textbf{Test set (20\%)}: Fixed and used to evaluate all models.
     \end{itemize}
 
-\newpage
-
     \item \textbf{Subsample Generation}: 
     \begin{itemize}
         \item Define the subsample size ($\mathbf{N}$) for each training subset (e.g., $\mathbf{N}$=250).
@@ -349,7 +347,7 @@ The objective of our protocol is to decompose the total error of a model into th
         \end{itemize}
     \end{enumerate}
 
-   \textbf{Step 4: Compute Metrics}
+   \item \textbf{Compute Metrics}
 \begin{enumerate}
     \item \textbf{Total Error:} The expected squared difference between the mean prediction and the true values:
     \[
@@ -387,7 +385,7 @@ The objective of our protocol is to decompose the total error of a model into th
 \end{enumerate}
 
 
-    \item \textbf{Step 5: Hyperparameter Exploration}
+    \item \textbf{Hyperparameter Exploration}
     \begin{itemize}
         \item Repeat Steps 2--4 for different values of the model's complexity parameter:
         \begin{itemize}
@@ -401,7 +399,6 @@ The objective of our protocol is to decompose the total error of a model into th
     
  %% Question 2.3: Implement and use this protocol on the given dataset to estimate the expected error, 
 % variance, and the sum of bias and residual error, for Lasso regression, kNN, and regression trees.
-\newpage
 \subsection{}
 
 For this experiment, we fixed the learning sample size to 250 and varied the number of learning samples. We evaluated the expected error, variance, and the sum of bias and residual error for three different models: k-Nearest Neighbors, Lasso regression, and Regression Trees. We plotted the evolution of these quantities as a function of the main complexity parameter for each model.
@@ -410,51 +407,51 @@ For this experiment, we fixed the learning sample size to 250 and varied the num
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{aaaa.png}
+    \includegraphics[width=0.8\linewidth]{2.3_knn.png}
 \end{figure}
 
 Discussion:
 
-For k-NN, we varied the number of neighbors (\(k\)) from 1 to 20. The \textbf{Total Error} decreases sharply as \(k\) increases from small values, indicating improved model performance as more neighbors are incorporated into the predictions. This reflects that averaging over more neighbors reduces the model’s sensitivity to noise and outliers. However, beyond a certain point, the total error stabilizes, as the reduction in variance is offset by an increase in bias. This behavior is consistent with the bias-variance trade-off.\\
+For k-NN, we varied the number of neighbors (\(k\)) from 1 to 20. The \textbf{Total Error} decreases sharply as \(k\) increases from small values, indicating improved model performance as more neighbors are incorporated into the predictions. This reflects that averaging over more neighbors reduces the model’s sensitivity to noise and outliers. However, beyond a certain point, the total error stabilizes, as the reduction in variance is offset by an increase in bias. This behavior is consistent with the bias-variance trade-off.
 
-The \textbf{Variance} decreases as \(k\) increases because the model becomes less sensitive to individual data points. For small values of \(k\), the predictions rely heavily on the nearest training points, resulting in high variance. As \(k\) grows, the predictions are averaged over more neighbors, reducing the variability in the predictions and smoothing the model's output. This reduction in variance demonstrates the model's increasing robustness to noise.\\ 
+The \textbf{Variance} decreases as \(k\) increases because the model becomes less sensitive to individual data points. For small values of \(k\), the predictions rely heavily on the nearest training points, resulting in high variance. As \(k\) grows, the predictions are averaged over more neighbors, reducing the variability in the predictions and smoothing the model's output. This reduction in variance demonstrates the model's increasing robustness to noise.
 
-The \textbf{Bias + Residual Error} increases with \(k\). When \(k\) is small, the model is highly flexible, capturing fine-grained details in the data, leading to low bias. As \(k\) increases, the model oversmooths the data, failing to capture finer patterns, and the bias grows. The residual error remains constant as it is intrinsic to the data and independent of the model's complexity.\\ 
+The \textbf{Bias + Residual Error} increases with \(k\). When \(k\) is small, the model is highly flexible, capturing fine-grained details in the data, leading to low bias. As \(k\) increases, the model oversmooths the data, failing to capture finer patterns, and the bias grows. The residual error remains constant as it is intrinsic to the data and independent of the model's complexity.
 
 
 \subsubsection{Lasso}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{bbbb.png}
+    \includegraphics[width=0.8\linewidth]{2.3_lasso.png}
 \end{figure}
 
-Discussion:\\
+Discussion:
 
-For Lasso regression, we varied the regularization parameter \(\lambda\) on a logarithmic scale, ranging from \(10^{-6}\) to \(10^0\). The graph shows the behavior of the total error, variance, and the sum of bias and residual error as \(\lambda\) increases.\\
+For Lasso regression, we varied the regularization parameter \(\lambda\) on a logarithmic scale, ranging from \(10^{-6}\) to \(10^0\). The graph shows the behavior of the total error, variance, and the sum of bias and residual error as \(\lambda\) increases.
 
-As \(\lambda\) increases, the \textbf{Total Error} (blue curve) gradually rises. This behavior indicates that the model becomes too simplistic, leading to underfitting. The increase in \(\lambda\) penalizes the magnitude of the model’s coefficients, forcing them towards zero. While this reduces overfitting, it also limits the model’s flexibility to fit the data, causing it to miss important patterns and increasing the error.\\
+As \(\lambda\) increases, the \textbf{Total Error} (blue curve) gradually rises. This behavior indicates that the model becomes too simplistic, leading to underfitting. The increase in \(\lambda\) penalizes the magnitude of the model’s coefficients, forcing them towards zero. While this reduces overfitting, it also limits the model’s flexibility to fit the data, causing it to miss important patterns and increasing the error.
 
-The \textbf{Variance} (orange curve) decreases sharply as \(\lambda\) increases. This is because the regularization term suppresses large coefficients, making the model less sensitive to small fluctuations or noise in the training data. A smaller variance implies that the predictions are more stable across different subsets of the data, reflecting the model's reduced sensitivity to overfitting.\\
+The \textbf{Variance} (orange curve) decreases sharply as \(\lambda\) increases. This is because the regularization term suppresses large coefficients, making the model less sensitive to small fluctuations or noise in the training data. A smaller variance implies that the predictions are more stable across different subsets of the data, reflecting the model's reduced sensitivity to overfitting.
 
-On the other hand, the \textbf{Bias + Residual Error} (green curve) increases with \(\lambda\). As the model is regularized more heavily, it becomes overly simplistic and fails to capture the complexity of the underlying data distribution. This behavior exemplifies the classic \textbf{bias-variance trade-off}: higher regularization reduces variance but increases bias.\\
+On the other hand, the \textbf{Bias + Residual Error} (green curve) increases with \(\lambda\). As the model is regularized more heavily, it becomes overly simplistic and fails to capture the complexity of the underlying data distribution. This behavior exemplifies the classic \textbf{bias-variance trade-off}: higher regularization reduces variance but increases bias.
 
 \subsubsection{Regression Tree}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{zzzz.png}
+    \includegraphics[width=0.8\linewidth]{2.3_rt.png}
 \end{figure}
 
-Discussion:\\
+Discussion:
 
-For Regression Trees, we varied the maximum depth from 1 to 20. Initially, as the depth increases, the \textbf{Total Error} (blue curve) decreases. This indicates that the tree is capturing more complex patterns in the data, improving model performance. However, after reaching an optimal depth, further increasing the depth leads to an increase in total error, as the model starts overfitting the training data. Overfitting occurs because the tree becomes excessively complex and adapts to noise in the data.\\
+For Regression Trees, we varied the maximum depth from 1 to 20. Initially, as the depth increases, the \textbf{Total Error} (blue curve) decreases. This indicates that the tree is capturing more complex patterns in the data, improving model performance. However, after reaching an optimal depth, further increasing the depth leads to an increase in total error, as the model starts overfitting the training data. Overfitting occurs because the tree becomes excessively complex and adapts to noise in the data.
 
-The \textbf{Variance} (orange curve) increases with the maximum depth. Deeper trees are more sensitive to the training data, capturing noise and fluctuations, which results in higher variance. This sensitivity causes the model to perform inconsistently across different datasets, reducing its generalization ability.\\
+The \textbf{Variance} (orange curve) increases with the maximum depth. Deeper trees are more sensitive to the training data, capturing noise and fluctuations, which results in higher variance. This sensitivity causes the model to perform inconsistently across different datasets, reducing its generalization ability.
 
-The \textbf{Bias + Residual Error} (green curve) decreases as the depth increases. Shallow trees have high bias because they are too simple to capture the underlying relationships in the data, leading to systematic errors. As the tree becomes more flexible with increased depth, it models more complex relationships and reduces bias. However, this comes at the cost of increased variance.\\
+The \textbf{Bias + Residual Error} (green curve) decreases as the depth increases. Shallow trees have high bias because they are too simple to capture the underlying relationships in the data, leading to systematic errors. As the tree becomes more flexible with increased depth, it models more complex relationships and reduces bias. However, this comes at the cost of increased variance.
 
-This behavior follows the classic \textbf{bias-variance trade-off}: shallow trees exhibit high bias but low variance (underfitting), while deeper trees show low bias but high variance (overfitting). The optimal depth achieves a balance, capturing enough complexity to reduce bias while controlling the variance. Additionally, deeper trees tend to perform better with larger datasets, as they have more information to learn from. However, if the training sample is small, deeper trees are more likely to overfit the data.\\
+This behavior follows the classic \textbf{bias-variance trade-off}: shallow trees exhibit high bias but low variance (underfitting), while deeper trees show low bias but high variance (overfitting). The optimal depth achieves a balance, capturing enough complexity to reduce bias while controlling the variance. Additionally, deeper trees tend to perform better with larger datasets, as they have more information to learn from. However, if the training sample is small, deeper trees are more likely to overfit the data.
 
 
 
@@ -469,7 +466,7 @@ This behavior follows the classic \textbf{bias-variance trade-off}: shallow tree
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{zaeeaeza.png}
+    \includegraphics[width=0.8\linewidth]{2.4_knn.png}
 \end{figure}
 
 Discussion:  
@@ -479,7 +476,7 @@ For kNN, we fixed the number of neighbors to 5 and varied the learning sample si
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{zeazdca.png}
+    \includegraphics[width=0.8\linewidth]{2.4_lasso.png}
 \end{figure}
 
 Discussion:  
@@ -489,7 +486,7 @@ For Lasso, we fixed the regularization parameter to 0.01 and varied the learning
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{zacacaa.png}
+    \includegraphics[width=0.8\linewidth]{2.4_rt_fixed.png}
 \end{figure}
 
 Discussion:  
@@ -499,7 +496,7 @@ For the regression tree with fixed depth, we set the maximum depth to 5 and vari
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{zaczaw.png}
+    \includegraphics[width=0.8\linewidth]{2.4_rt_full.png}
 \end{figure}
 
 Discussion:  
