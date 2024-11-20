@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 
 from constants import *
 
-def prepare_learning_samples(x, y, nb_samples=NB_SAMPLES, sample_size=SAMPLE_SIZE, test_size=TEST_SIZE):
+def prepare_learning_samples(x, y, nb_samples, sample_size, test_size):
     """
     Split the data into a list of learning sample (input, output), inputs of test sample and its outputs for verification. 
     """
