@@ -67,3 +67,38 @@ def plot_evolution(results):
 
         plt.tight_layout()
         plt.show()
+
+def plot_ensemble_results(results):
+    for method in results:
+        n_estimators = results[method]["n_estimators"]
+        total_errors = results[method]["total_errors"]
+        variances = results[method]["variances"]
+        biases = results[method]["biases"]
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(n_estimators, total_errors, label="Total Error", linewidth=2, marker='o')
+        ax.plot(n_estimators, variances, label="Variance", linewidth=2, marker='s')
+        ax.plot(n_estimators, biases, label="Bias + Residual Error", linewidth=2, marker='^')
+
+        ax.set_title(f"{method}")
+        ax.set_xlabel("Number of Estimators")
+        ax.set_ylabel("Error")
+        ax.legend()
+
+        plt.tight_layout()
+        plt.show()
+
+def plot_per_element(results_per_depth):
+    for method in results_per_depth[TREE_PARAMS_Q2_5[0]]:
+        for element in ["total_errors", "variances", "biases"]:
+            fig, ax = plt.subplots(figsize=(10, 5))
+            for depth in TREE_PARAMS_Q2_5:
+                ax.plot(results_per_depth[depth][method]["n_estimators"], results_per_depth[depth][method][element], label=f"{element} of {method}", linewidth=2, marker='o')
+            
+            ax.set_title(element)
+            ax.set_xlabel("Number of Estimators")
+            ax.set_ylabel("Value")
+            ax.legend()
+
+            plt.tight_layout()
+            plt.show()
