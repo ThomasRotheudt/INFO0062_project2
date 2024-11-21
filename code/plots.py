@@ -93,9 +93,9 @@ def plot_per_element(results_per_depth):
         for element in ["total_errors", "variances", "biases"]:
             fig, ax = plt.subplots(figsize=(10, 5))
             for depth in TREE_PARAMS_Q2_5:
-                ax.plot(results_per_depth[depth][method]["n_estimators"], results_per_depth[depth][method][element], label=f"{element} of {method}", linewidth=2, marker='o')
+                ax.plot(results_per_depth[depth][method]["n_estimators"], results_per_depth[depth][method][element], label=f"{element} with depth={depth}", linewidth=2, marker='o')
             
-            ax.set_title(element)
+            ax.set_title(f"{element} of {method}")
             ax.set_xlabel("Number of Estimators")
             ax.set_ylabel("Value")
             ax.legend()
