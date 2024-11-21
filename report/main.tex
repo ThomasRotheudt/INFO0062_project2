@@ -366,11 +366,14 @@ For this experiment, we fixed the learning sample size to 250 and varied the num
 
 Discussion:
 
-For k-NN, we varied the number of neighbors (\(k\)) from 1 to 20. The \textbf{Total Error} decreases sharply as \(k\) increases from small values, indicating improved model performance as more neighbors are incorporated into the predictions. This reflects that averaging over more neighbors reduces the model’s sensitivity to noise and outliers. However, beyond a certain point, the total error stabilizes, as the reduction in variance is offset by an increase in bias. This behavior is consistent with the bias-variance trade-off.
+For k-NN, we varied the number of neighbors \(k\) from 1 to 200. The \textbf{Total Error} decreases sharply as \(k\) increases from small values, indicating improved model performance as more neighbors are incorporated into the predictions. This reflects that averaging over more neighbors reduces the model’s sensitivity to noise and outliers. However, beyond a certain point, the total error stabilizes and then increases. This happens because the model begins to oversmooth as \(k\) becomes too large, effectively averaging over neighbors that may include points from different classes or regions, reducing its ability to make precise predictions for local patterns.
 
+The behavior we observe is consistent with the bias-variance trade-off.
 The \textbf{Variance} decreases as \(k\) increases because the model becomes less sensitive to individual data points. For small values of \(k\), the predictions rely heavily on the nearest training points, resulting in high variance. As \(k\) grows, the predictions are averaged over more neighbors, reducing the variability in the predictions and smoothing the model's output. This reduction in variance demonstrates the model's increasing robustness to noise.
 
 The \textbf{Bias + Residual Error} increases with \(k\). When \(k\) is small, the model is highly flexible, capturing fine-grained details in the data, leading to low bias. As \(k\) increases, the model oversmooths the data, failing to capture finer patterns, and the bias grows. The residual error remains constant as it is intrinsic to the data and independent of the model's complexity.
+
+Thus, the optimal k represents a balance between bias and variance, minimizing the total error by achieving the right trade-off between underfitting and overfitting.
 
 
 \subsubsection{Lasso}
@@ -390,6 +393,9 @@ The \textbf{Variance} (orange curve) decreases sharply as \(\lambda\) increases.
 
 On the other hand, the \textbf{Bias + Residual Error} (green curve) increases with \(\lambda\). As the model is regularized more heavily, it becomes overly simplistic and fails to capture the complexity of the underlying data distribution. This behavior exemplifies the classic \textbf{bias-variance trade-off}: higher regularization reduces variance but increases bias.
 
+The optimal value of \(\lambda\) is in a region where the total error is minimized, balancing the trade-off between bias and variance. At this point, the regularization is sufficient to prevent overfitting while retaining enough model complexity to capture the significant patterns in the data. Beyond this point, further increases in \(\lambda\) lead to diminishing returns, as the model’s ability to represent the underlying data diminishes.
+
+
 \subsubsection{Regression Tree}
 
 \begin{figure}[H]
@@ -405,7 +411,7 @@ The \textbf{Variance} (orange curve) increases with the maximum depth. Deeper tr
 
 The \textbf{Bias + Residual Error} (green curve) decreases as the depth increases. Shallow trees have high bias because they are too simple to capture the underlying relationships in the data, leading to systematic errors. As the tree becomes more flexible with increased depth, it models more complex relationships and reduces bias. However, this comes at the cost of increased variance.
 
-This behavior follows the classic \textbf{bias-variance trade-off}: shallow trees exhibit high bias but low variance (underfitting), while deeper trees show low bias but high variance (overfitting). The optimal depth achieves a balance, capturing enough complexity to reduce bias while controlling the variance. Additionally, deeper trees tend to perform better with larger datasets, as they have more information to learn from. However, if the training sample is small, deeper trees are more likely to overfit the data.
+This behavior follows the classic \textbf{bias-variance trade-off}: shallow trees exhibit high bias but low variance (underfitting), while deeper trees show low bias but high variance (overfitting). The optimal depth achieves a balance, capturing enough complexity to reduce bias while controlling the variance.
 
 
 
@@ -424,7 +430,14 @@ This behavior follows the classic \textbf{bias-variance trade-off}: shallow tree
 \end{figure}
 
 Discussion:  
-For kNN, we fixed the number of neighbors to 5 and varied the learning sample size. The plot shows that as the learning sample size increases, the total error decreases, indicating improved model performance with more data. The variance also decreases with increasing sample size, as the model becomes more stable and less sensitive to individual data points. The bias error remains relatively constant, suggesting that the ability of the model to capture the underlying patterns does not change significantly with more data. This behavior aligns with the theory that increasing the sample size reduces variance by providing more information for the model to generalize better, while bias remains relatively unaffected as it is more dependent on the complexity of the model. This highlights the bias-variance trade-off in kNN, where smaller sample sizes lead to higher variance and overfitting, while larger sample sizes help stabilize the model.
+For \(k\)-NN, we fixed the number of neighbors to 5 and varied the learning sample size. The plot shows that as the learning sample size increases, the \textbf{Total Error} decreases, indicating improved model performance with more data. The \textbf{Variance} also decreases with increasing sample size, as the model becomes more stable and less sensitive to individual data points. We can also observe the \textbf{Bias} decreasing as the sample size grows. 
+
+This occurs because a larger sample size provides more representative data points for the model to learn from, reducing the likelihood of overfitting specific regions of the data. Additionally, as the sample size increases, the effective complexity of the model increases, as it gains access to a richer set of information to make more precise predictions. This reduces the bias caused by an insufficiently diverse training set.
+
+Larger datasets enable \(k\)-NN to approximate the true underlying data distribution more effectively, improving both generalization and accuracy. However, as the sample size continues to grow, the rate of improvement in model performance diminishes. This is because the model reaches a point where it has effectively captured the underlying data distribution, and further increases in the sample size provide minimal additional benefit. At this stage, the residual error, which represents the irreducible noise in the data, becomes the dominant factor in the total error.
+
+In summary, increasing the sample size improves the model’s ability to generalize by lowering both variance and bias. However, past a certain point, the model's performance stop improving as it approaches its theoretical limit (constrained by the residual error).
+
 
 \subsubsection{Lasso - $\lambda$ = 0.01 }
 
@@ -434,7 +447,15 @@ For kNN, we fixed the number of neighbors to 5 and varied the learning sample si
 \end{figure}
 
 Discussion:  
-For Lasso, we fixed the regularization parameter to 0.01 and varied the learning sample size. The plot shows that as the learning sample size increases, the total error decreases, indicating improved model performance with more data. The variance decreases with increasing sample size as well, as the model becomes more stable and less sensitive to noise in the training set. The bias error remains relatively constant, suggesting that the ability of Lasso to capture the underlying patterns does not change significantly with more data, which is consistent with the fixed regularization parameter. As the sample size increases, the variance decreases due to a more robust coefficient estimation, while the bias remains largely unaffected by sample size, as the regularization strength governs the complexity of the model. This illustrates that the performance of Lasso is more dependent on regularization than on sample size.
+For Lasso, we fixed the regularization parameter to 0.01 and varied the learning sample size. The plot shows that as the learning sample size increases, the \textbf{Total Error} decreases, indicating improved model performance with more data. The \textbf{Variance} decreases with increasing sample size as well, as the model becomes more stable and less sensitive to noise in the training set. The \textbf{Bias} remains relatively constant, suggesting that the ability of Lasso to capture the underlying patterns does not change significantly with more data, which is consistent with the fixed regularization parameter.
+
+As the sample size increases, the \textbf{Variance} decreases due to a more robust coefficient estimation. With larger datasets, the model can better distinguish signal from noise, leading to more stable predictions. However, the \textbf{Bias} remains largely unaffected because the regularization strength, determined by the fixed \(\lambda = 0.01\), controls the model's complexity. This fixed regularization parameter constrains the model by penalizing large coefficients, effectively limiting the number of features it can use to make predictions. Even with a larger sample size, the regularization term prevents the model from increasing its complexity, maintaining the same level of approximation for the underlying data distribution. 
+
+This behavior occurs because the regularization term explicitly controls the model's capacity to fit the data by forcing many coefficients towards zero or small values. As a result, regardless of how much data is added, the bias, which depends on the model's flexibility, does not change. The model remains constrained by the fixed \(\lambda\).
+
+This illustrates that the performance of Lasso is more dependent on the choice of regularization parameter than on the sample size. While a larger sample size helps in reducing variance, the bias is primarily controlled by the regularization term, which dictates how much complexity the model can incorporate. In summary, the total error decreases with increasing sample size due to the reduction in variance, but the bias remains constant, reflecting the model's fixed complexity as determined by the regularization parameter.
+
+
 
 \subsubsection{Regression Trees - Fixed Depth}
 
@@ -444,7 +465,12 @@ For Lasso, we fixed the regularization parameter to 0.01 and varied the learning
 \end{figure}
 
 Discussion:  
-For the regression tree with fixed depth, we set the maximum depth to 5 and varied the learning sample size. The plot shows that as the learning sample size increases, the total error decreases, indicating improved model performance with more data. The variance also decreases with increasing sample size as the model becomes more stable and less sensitive to individual data points. The bias error remains relatively constant, suggesting that the tree's ability to capture underlying patterns does not change significantly with more data, as the tree is constrained by its fixed depth. With more data, the model's stability improves, leading to a decrease in variance. However, due to the fixed depth, the bias remains constant, as the model's complexity is predetermined and does not adapt to the data.
+For the regression tree with fixed depth, we set the maximum depth to 5 and varied the learning sample size. The plot shows that as the learning sample size increases, the \textbf{Total Error} decreases, indicating improved model performance with more data. The \textbf{Variance} decreases as well, similar to the behavior observed in Lasso and \(k\)-NN, as the model becomes more stable and less sensitive to individual data points. The \textbf{Bias} remains constant, reflecting the fixed complexity of the tree, which cannot adapt to the larger dataset, like with the regularization parameter in Lasso.
+
+Increasing the sample size reduces \textbf{Variance}, as the model benefits from a more representative dataset, making it more stable and less prone to overfitting. However, the \textbf{Bias} remains unaffected because the tree's depth is fixed, restricting its ability to capture more complex patterns regardless of the sample size.
+
+In summary, as in \(k\)-NN and Lasso, increasing the sample size reduces variance, but the bias stays constant due to the fixed model complexity. The total error decreases because of this reduction in variance, but the bias remains constant, as the model's capacity to learn complex relationships is limited by the fixed depth.
+
 
 \subsubsection{Regression Tree - Full}
 
@@ -454,13 +480,89 @@ For the regression tree with fixed depth, we set the maximum depth to 5 and vari
 \end{figure}
 
 Discussion:  
-For the regression tree with full depth, we allowed the tree to grow without any depth restriction and varied the learning sample size. The plot shows that as the learning sample size increases, the total error decreases, indicating improved model performance with more data. The variance decreases with increasing sample size, as the model becomes more stable and less sensitive to individual data points. The bias error remains relatively constant, suggesting that the ability of the model to capture the underlying patterns does not change significantly with more data. This behavior aligns with the theory that increasing the sample size reduces variance by providing more information for the model to generalize better, while bias remains relatively unaffected as it is more dependent on the complexity of the model. Unlike the fixed depth tree, the fully grown tree has a lower bias due to its higher flexibility, but it exhibits higher variance, especially when the sample size is small, as it tends to overfit the data. As the sample size increases, overfitting is mitigated, and the model's variance reduces, allowing it to generalize better.
+For the regression tree with full depth, we allowed the tree to grow without any depth restriction and varied the learning sample size. The plot shows that as the learning sample size increases, the \textbf{Total Error} decreases, indicating improved model performance with more data. The \textbf{Variance} decreases with increasing sample size, as the model becomes more stable and less sensitive to individual data points, similar to the behavior observed in \(k\)-NN and Lasso.
+
+The \textbf{Bias} decreases as the sample size grows. With infinite depth, the tree can perfectly fit the data by capturing all patterns, including the smallest ones, thus reducing bias. This is because a deeper tree has more flexibility to model the data, fitting the underlying relationships more accurately. As a result, the model can better approximate the true data distribution, reducing the bias. In contrast to a shallow tree, which is limited in its capacity to model complexity, the tree with full depth has a lower bias, especially when provided with more data.
+
+However, the tree with full depth has an higher variance, especially when the sample size is small, as it tends to overfit the data. As the sample size increases, overfitting is mitigated, and the model's variance reduces.
+
+In summary, increasing the sample size in a fully grown regression tree reduces both variance and bias, improving the model’s performance.
+
+
 
 
 
     %% Question 2.5: Two so-called ensemble methods to address variance and bias are bagging 
     % ("bootstrap aggregating") and boosting. 
+\subsection{}
 
-    
+\subsubsection{Bagging}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/2.5_bagging.pdf}
+\end{figure}
+
+Discussion:
         
+
+\subsubsection{Boosting}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/2.5_boosting.pdf}
+\end{figure}
+
+Discussion:
+
+\subsubsection{Complexity influence}
+
+Below are the plots of the total error, bias (bias squared + residual error), and variance of the result using the bagging method.
+
+\begin{figure}[H]
+    \centering 
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_total_error_bagging.pdf}
+        \caption{Evolution of total error}
+    \end{minipage}%
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_bias_bagging.pdf}
+        \caption{Evolution of bias}
+    \end{minipage}%
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_var_bagging.pdf}
+        \caption{Evolution of var}
+    \end{minipage}
+    \caption{Evolution of bagging results based on the max depth.}
+\end{figure}
+
+Discussion:
+
+
+Below are the plots of the total error, bias (bias squared + residual error), and variance of the result using the boosting method.
+
+\begin{figure}[H]
+    \centering 
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_total_error_boosting.pdf}
+        \caption{Evolution of total error}
+    \end{minipage}%
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_bias_boosting.pdf}
+        \caption{Evolution of bias}
+    \end{minipage}%
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/2.5_var_boosting.pdf}
+        \caption{Evolution of var}
+    \end{minipage}
+    \caption{Evolution of boosting results based on the max depth.}
+\end{figure}
+
+Discussion:
+The boosting should have a lower bias but it doesn't doesn't decrease significantly and the base value is as high as using other models. Since the bias doesn't decrease as it should, using boosting doesn't give good results in this case.
+
 \end{document}
