@@ -35,8 +35,10 @@ def compute_metrics(predictions, true_values):
     """
     Compute some metrics based on the prediction and the true_values.
     """
-    mean_prediction = np.mean(predictions, axis=0)
-    total_error = np.mean((mean_prediction - true_values) ** 2)
+    MSE_list = []
+    for prediction in predictions:
+        MSE_list.append(np.mean((prediction - true_values) ** 2))
+    total_error = np.mean(MSE_list)
     variance = np.mean(np.var(predictions, axis=0))
     bias_squared = total_error - variance
     
