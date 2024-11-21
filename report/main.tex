@@ -503,6 +503,7 @@ In summary, increasing the sample size in a fully grown regression tree reduces 
 \end{figure}
 
 Discussion:
+The variance decreases quickly as the number of estimator increase. The bias is constant, therefore the total error follow the same changes as the variance and decrease as the number of estimators increase. As expected this method decrease significantly the variance.
         
 
 \subsubsection{Boosting}
@@ -512,10 +513,11 @@ Discussion:
 \end{figure}
 
 Discussion:
+The boosting should have a lower bias but it doesn't doesn't decrease significantly and the base value is as high as using other models. Since the bias doesn't decrease as it should, using boosting doesn't give good results in this case.
 
 \subsubsection{Complexity influence}
 
-Below are the plots of the total error, bias (bias squared + residual error), and variance of the result using the bagging method.
+Below are the plots of the total error, bias (bias squared + residual error), and variance of the result using the bagging method. The variance still decreases as the number of estimators increase but it is less smooth than the bagging method.
 
 \begin{figure}[H]
     \centering 
@@ -538,7 +540,7 @@ Below are the plots of the total error, bias (bias squared + residual error), an
 \end{figure}
 
 Discussion:
-
+Lower maximal depth induces a greater bias but the variance decrease significantly so there is a tradeoff. Here the sweet spot is around 3.
 
 Below are the plots of the total error, bias (bias squared + residual error), and variance of the result using the boosting method.
 
@@ -563,6 +565,6 @@ Below are the plots of the total error, bias (bias squared + residual error), an
 \end{figure}
 
 Discussion:
-The boosting should have a lower bias but it doesn't doesn't decrease significantly and the base value is as high as using other models. Since the bias doesn't decrease as it should, using boosting doesn't give good results in this case.
+We have the same conclusion as for the bagging method. Smaller max depth gives a lower total error in average but if the max depth is too low the bias increase too much and is no longer the best best choice. The best results are achieves with a max depth of 3 in this case.
 
 \end{document}

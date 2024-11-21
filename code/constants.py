@@ -7,7 +7,7 @@ LASSO_PARAMS = np.logspace(-6, 0, 20)
 TREE_PARAMS = range(1, 21)
 NB_ESTIMATOR = range(1, 10+1)
 BASE_DEPTH = 5
-TREE_PARAMS_Q2_5 = range(5, 20+1, 5)
+TREE_PARAMS_Q2_5 = range(1, 11, 2)
 
 # Enable or disable respective part
 KNN = True
